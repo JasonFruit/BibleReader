@@ -1,0 +1,425 @@
+(dp0
+S'Ru'
+p1
+S'Ruth'
+p2
+sS'Matt'
+p3
+S'Matthew'
+p4
+sS'1 Kgs'
+p5
+S'1 Kings'
+p6
+sS'3 Jn'
+p7
+S'3 John'
+p8
+sS'Hab'
+p9
+S'Habakkuk'
+p10
+sS'Acts'
+p11
+S'Acts of the Apostles'
+p12
+sS'Jas'
+p13
+S'James'
+p14
+sS'Hag'
+p15
+S'Haggai'
+p16
+sS'1 Sam'
+p17
+S'1 Samuel'
+p18
+sS'2 Kgs'
+p19
+S'2 Kings'
+p20
+sS'Dan'
+p21
+S'Daniel'
+p22
+sS'2 John'
+p23
+S'2 John'
+p24
+sS'Jl'
+p25
+S'Joel'
+p26
+sS'Jn'
+p27
+S'John'
+p28
+sS'Jo'
+p29
+S'Joshua'
+p30
+sS'1 Thess'
+p31
+S'1 Thessalonians'
+p32
+sS'Na'
+p33
+S'Nahum'
+p34
+sS'Pss'
+p35
+S'Psalms'
+p36
+sS'2 Sam'
+p37
+S'2 Samuel'
+p38
+sS'1 Chr'
+p39
+S'1 Chronicles'
+p40
+sS'James'
+p41
+g14
+sS'Titus'
+p42
+S'Titus'
+p43
+sS'Ob'
+p44
+S'Obadiah'
+p45
+sS'Hosea'
+p46
+S'Hosea'
+p47
+sS'2 Cor'
+p48
+S'2 Corinthians'
+p49
+sS'Nah'
+p50
+g34
+sS'1 Pt'
+p51
+S'1 Peter'
+p52
+sS'Ezr'
+p53
+S'Ezra'
+p54
+sS'Mal'
+p55
+S'Malachi'
+p56
+sS'Prv'
+p57
+S'Proverbs'
+p58
+sS'Exod'
+p59
+S'Exodus'
+p60
+sS'Gn'
+p61
+S'Genesis'
+p62
+sS'Zeph'
+p63
+S'Zephaniah'
+p64
+sS'Ps'
+p65
+g36
+sS'Neh'
+p66
+S'Nehemiah'
+p67
+sS'2 Tm'
+p68
+S'2 Timothy'
+p69
+sS'3 John'
+p70
+g8
+sS'1 Kings'
+p71
+g6
+sS'Mark'
+p72
+S'Mark'
+p73
+sS'John'
+p74
+g28
+sS'2 Chron'
+p75
+S'2 Chronicles'
+p76
+sS'Job'
+p77
+S'Job'
+p78
+sS'Lev'
+p79
+S'Leviticus'
+p80
+sS'Hb'
+p81
+g10
+sS'Hg'
+p82
+g16
+sS'Jon'
+p83
+S'Jonah'
+p84
+sS'Judg'
+p85
+S'Judges'
+p86
+sS'Mi'
+p87
+S'Micah'
+p88
+sS'Jude'
+p89
+S'Jude'
+p90
+sS'Mt'
+p91
+g4
+sS'1 Jn'
+p92
+S'1 John'
+p93
+sS'Mk'
+p94
+g73
+sS'Eph'
+p95
+S'Ephesians'
+p96
+sS'Amos'
+p97
+S'Amos'
+p98
+sS'Eccl'
+p99
+S'Ecclesiastes'
+p100
+sS'Ezra'
+p101
+g54
+sS'1 Co'
+p102
+S'1 Corinthians'
+p103
+sS'Ex'
+p104
+g60
+sS'Ez'
+p105
+S'Ezekiel'
+p106
+sS'Jer'
+p107
+S'Jeremiah'
+p108
+sS'1 Tim'
+p109
+S'1 Timothy'
+p110
+sS'Obad'
+p111
+g45
+sS'Nm'
+p112
+S'Numbers'
+p113
+sS'Ezek'
+p114
+g106
+sS'2 Co'
+p115
+g49
+sS'Prov'
+p116
+g58
+sS'Heb'
+p117
+S'Hebrews'
+p118
+sS'Deut'
+p119
+S'Deuteronomy'
+p120
+sS'Ruth'
+p121
+g2
+sS'1 Sm'
+p122
+g18
+sS'1 Thes'
+p123
+g32
+sS'Gal'
+p124
+S'Galatians'
+p125
+sS'2 Thess'
+p126
+S'2 Thessalonians'
+p127
+sS'Philem'
+p128
+S'Philemon'
+p129
+sS'Gen'
+p130
+g62
+sS'1 Pet'
+p131
+g52
+sS'Rev'
+p132
+S'Revelation'
+p133
+sS'Phil'
+p134
+S'Philippians'
+p135
+sS'1 Tm'
+p136
+g110
+sS'2 Jn'
+p137
+g24
+sS'2 Tim'
+p138
+g69
+sS'Sg'
+p139
+S'Song of Solomon'
+p140
+sS'Rom'
+p141
+S'Romans'
+p142
+sS'Song of Sol'
+p143
+g140
+sS'Num'
+p144
+g113
+sS'Jb'
+p145
+g78
+sS'1 Cor'
+p146
+g103
+sS'Est'
+p147
+S'Esther'
+p148
+sS'Phlm'
+p149
+g129
+sS'Mic'
+p150
+g88
+sS'Josh'
+p151
+g30
+sS'Lk'
+p152
+S'Luke'
+p153
+sS'Lv'
+p154
+g80
+sS'Rv'
+p155
+g133
+sS'Hos'
+p156
+g47
+sS'2 Chr'
+p157
+g76
+sS'Ti'
+p158
+g43
+sS'2 Thes'
+p159
+g127
+sS'Dn'
+p160
+g22
+sS'Lam'
+p161
+S'Lamentations'
+p162
+sS'Jgs'
+p163
+g86
+sS'1 Chron'
+p164
+g40
+sS'2 Pt'
+p165
+S'2 Peter'
+p166
+sS'2 Pet'
+p167
+g166
+sS'Luke'
+p168
+g153
+sS'Dt'
+p169
+g120
+sS'Zech'
+p170
+S'Zechariah'
+p171
+sS'Joel'
+p172
+g26
+sS'Esther'
+p173
+g148
+sS'1 John'
+p174
+g93
+sS'Isa'
+p175
+S'Isaiah'
+p176
+sS'Col'
+p177
+S'Colossians'
+p178
+sS'Zec'
+p179
+g171
+sS'Is'
+p180
+g176
+sS'Am'
+p181
+g98
+sS'Zep'
+p182
+g64
+sS'2 Kings'
+p183
+g20
+sS'2 Sm'
+p184
+g38
+sS'Eccles'
+p185
+g100
+s.

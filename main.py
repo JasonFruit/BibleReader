@@ -75,6 +75,11 @@ class ClipListViewer(QWidget):
         self.layout.addWidget(self.display)
 
         self.button_box = QHBoxLayout()
+
+        self.add_category_button = QPushButton("&Add category", self)
+        self.add_category_button.clicked.connect(self.add_category)
+        self.button_box.addWidget(self.add_category_button)
+
         self.button_box.addStretch(1)
 
         self.delete_button = QPushButton("&Delete", self)
@@ -89,6 +94,12 @@ class ClipListViewer(QWidget):
 
         self.show_clip()
 
+    def add_category(self):
+        new_category, ok = QInputDialog.getText(self, "Add Category", "Category:")
+        if ok:
+            self.manager.add_category(new_category)
+            self.manager_ui.add_category(new_category)
+
     def add_clips(self):
         self.clip.clear()
         self.keys = [clip.title for clip in self.clips]
@@ -99,7 +110,10 @@ class ClipListViewer(QWidget):
                    if clip.title ==
                 self.keys[self.clip.currentIndex()]][0]
     def show_clip(self):
-        self.display.setHtml(self.selected().html)
+        try:
+            self.display.setHtml(self.selected().html)
+        except IndexError:
+            pass
 
     def delete(self):
         self.clips.remove(self.selected())
@@ -135,6 +149,15 @@ class ClipManagerViewer(QDialog):
         for viewer in self.clip_viewers:
             self.tabs.addTab(viewer, viewer.category)
         self.setLayout(self.layout)
+
+    def add_category(self, category):
+        viewer = ClipListViewer(category,
+                                self.manager.categories[category],
+                                self.manager,
+                                self,
+                                self)
+        self.clip_viewers.append(viewer)
+        self.tabs.addTab(viewer, viewer.category)
 
     def refresh_viewers(self):
         for viewer in self.clip_viewers:

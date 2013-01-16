@@ -4,6 +4,7 @@ import sys
 
 from bible_reader import BibleReaderModel
 from books import books_order
+from clips import *
 
 from PySide.QtGui import *
 from PySide.QtWebKit import *
@@ -14,6 +15,7 @@ app_name = "Bible Reader"
 
 class PassageSelector(QDialog):
     """Convenient interface for choosing a passage of scripture"""
+
     def __init__(self):
         QDialog.__init__(self)
         self.setModal(True)
@@ -52,11 +54,14 @@ class PassageSelector(QDialog):
         self.lookup.clicked.connect(success_callback)
         self.show()
 
+
 class ClipListViewer(QWidget):
-    def __init__(self, clips, parent=None):
+    def __init__(self, clips, manager, parent=None):
         QWidget.__init__(self, parent)
         self.clips = clips
+        self.manager = manager
         self.set_up_ui()
+
     def set_up_ui(self):
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
@@ -71,21 +76,26 @@ class ClipListViewer(QWidget):
         self.delete_button.clicked.connect(self.delete)
         self.layout.addWidget(self.delete_button)
         self.show_clip()
+
     def add_clips(self):
         self.clip.clear()
         self.keys = [clip.title for clip in self.clips]
         self.clip.addItems(self.keys)
+
     def show_clip(self):
         clip = [clip for clip in self.clips
                 if clip.title ==
                    self.keys[self.clip.currentIndex()]][0]
         self.display.setHtml(clip.html)
+
     def delete(self):
         clip = [clip for clip in self.clips
                 if clip.title ==
                    self.keys[self.clip.currentIndex()]][0]
         self.clips.remove(clip)
+        save_to_file("clips.brc", self.manager)
         self.add_clips()
+
 
 class ClipManagerViewer(QDialog):
     def __init__(self, manager):
@@ -95,6 +105,7 @@ class ClipManagerViewer(QDialog):
         self.setWindowTitle("Clip Viewer")
         self.manager = manager
         self.set_up_ui()
+
     def set_up_ui(self):
         self.setLayout(None)
         self.layout = QFormLayout(self)
@@ -102,14 +113,18 @@ class ClipManagerViewer(QDialog):
         self.layout.addRow(self.tabs)
         for category in self.manager.categories.keys():
             self.tabs.addTab(ClipListViewer(self.manager.categories[category],
-                                            self), category)
+                self.manager,
+                self), category)
         self.setLayout(self.layout)
+
     def run(self):
         self.show()
+
     def delete(self):
         category = self.manager.categories.keys()[self.tabs.currentIndex()]
         self.manager.delete(self.current_clip, category)
         self.set_up_ui()
+
 
 class BibleReader(QMainWindow, BibleReaderModel):
     """The main UI for the bible reader app"""
@@ -171,6 +186,7 @@ class BibleReader(QMainWindow, BibleReaderModel):
         printDialog = QPrintDialog()
         if printDialog.exec_() == QDialog.Accepted:
             self.display.print_(printDialog.printer())
+
     def set_up_version_menu(self):
         # return a callback for the version
         def make_callback(version):
@@ -207,6 +223,7 @@ class BibleReader(QMainWindow, BibleReaderModel):
         global viewer
         viewer = ClipManagerViewer(self.clip_manager)
         viewer.run()
+
     def set_up_view_menu(self):
         font_menu = self.view_menu.addMenu("&Font")
         font_db = QFontDatabase()
@@ -239,11 +256,11 @@ class BibleReader(QMainWindow, BibleReaderModel):
         regular_action = QAction("&Regular", self)
         self.view_menu.addAction(regular_action)
 
-        def regular_cb():
+        def regular_view_cb():
             self.showMaximized()
             self.menuBar().show()
 
-        regular_action.triggered.connect(regular_cb)
+        regular_action.triggered.connect(regular_view_cb)
 
 
     def interactive_add_clip(self):

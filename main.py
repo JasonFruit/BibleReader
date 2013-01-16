@@ -306,9 +306,6 @@ class BibleReader(QMainWindow, BibleReaderModel):
         self.add_clip_action.triggered.connect(self.interactive_add_clip)
         self.clip_menu.addAction(self.add_clip_action)
 
-        # add the submenus for each category
-        self.add_clip_menus()
-
         view_action = QAction("&View", self)
         view_action.triggered.connect(self.view_clips)
         self.clip_menu.addAction(view_action)
@@ -372,20 +369,6 @@ class BibleReader(QMainWindow, BibleReaderModel):
 
     def lookup(self, passage_ref):
         self.display.setHtml(self.get_html(passage_ref))
-
-    def add_clip_menus(self):
-        for category in self.clip_manager.categories.keys():
-            menu = self.clip_menu.addMenu(category)
-            for clip in self.clip_manager.categories[category]:
-                clip_action = menu.addAction(clip.title)
-
-                def clip_handler(c):
-                    def handler():
-                        self.display.setHtml(c.html)
-
-                    return handler
-
-                clip_action.triggered.connect(clip_handler(clip))
 
 reader = BibleReader()
 reader.showMaximized()

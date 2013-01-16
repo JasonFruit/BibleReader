@@ -318,25 +318,11 @@ class BibleReader(QMainWindow, BibleReaderModel):
             action.triggered.connect(font_cb(family))
             font_menu.addAction(action)
 
-        fullscreen_action = QAction("&Distraction-free", self)
-        self.view_menu.addAction(fullscreen_action)
-
-        def fullscreen_cb():
-            self.showFullScreen()
+    def resizeEvent(self, event=None):
+        if self.isFullScreen():
             self.menuBar().hide()
-
-        fullscreen_action.triggered.connect(fullscreen_cb)
-
-        regular_action = QAction("&Regular", self)
-        self.view_menu.addAction(regular_action)
-
-        def regular_view_cb():
-            self.showMaximized()
+        else:
             self.menuBar().show()
-
-        regular_action.triggered.connect(regular_view_cb)
-
-
     def interactive_add_clip(self):
         cf = ClipFiler(self.clip_manager.categories.keys())
 

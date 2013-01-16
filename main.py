@@ -12,7 +12,8 @@ app = QApplication(sys.argv)
 
 app_name = "Bible Reader"
 
-class PassageEntry(QDialog):
+class PassageSelector(QDialog):
+    """Convenient interface for choosing a passage of scripture"""
     def __init__(self):
         QDialog.__init__(self)
         self.setModal(True)
@@ -21,26 +22,33 @@ class PassageEntry(QDialog):
         self.layout = QFormLayout()
         self.setLayout(self.layout)
 
+        # a combo-box of books, in order of appearance
         self.book = QComboBox(self)
         self.book.addItems(books_order)
 
         self.layout.addRow("&Book:", self.book)
 
+        # the rest of the reference is plain text; maybe eventually
+        # write a validator function
         self.section = QLineEdit(self)
         self.layout.addRow("&Section", self.section)
 
+        # space before the buttons
         self.layout.addRow(QLabel(""))
         self.layout.addRow(QLabel(""))
 
+        # A button to look up the passage
         self.lookup = QPushButton("&Look up", self)
         self.lookup.setMaximumWidth(120)
         self.layout.addRow("", self.lookup)
 
     def ref(self):
+        """return a string representation of the passage reference"""
         return "%s %s" % (books_order[self.book.currentIndex()],
                           self.section.text())
 
     def run(self, success_callback):
+        """show the form and call success_callback when finished"""
         self.lookup.clicked.connect(success_callback)
         self.show()
 
@@ -247,7 +255,7 @@ class BibleReader(QMainWindow, BibleReaderModel):
             self.set_up_clip_menu()
 
     def browse(self):
-        pl = PassageEntry()
+        pl = PassageSelector()
 
         def doit():
             self.lookup(pl.ref())

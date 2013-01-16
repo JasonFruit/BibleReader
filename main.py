@@ -54,12 +54,13 @@ class PassageSelector(QDialog):
         self.lookup.clicked.connect(success_callback)
         self.show()
 
-
 class ClipListViewer(QWidget):
-    def __init__(self, clips, manager, parent=None):
+    def __init__(self, category, clips, manager, manager_ui, parent=None):
         QWidget.__init__(self, parent)
+        self.category = category
         self.clips = clips
         self.manager = manager
+        self.manager_ui = manager_ui
         self.set_up_ui()
 
     def set_up_ui(self):
@@ -72,9 +73,20 @@ class ClipListViewer(QWidget):
         self.layout.addWidget(self.clip)
         self.display = QWebView(self)
         self.layout.addWidget(self.display)
+
+        self.button_box = QHBoxLayout()
+        self.button_box.addStretch(1)
+
         self.delete_button = QPushButton("&Delete", self)
         self.delete_button.clicked.connect(self.delete)
-        self.layout.addWidget(self.delete_button)
+        self.button_box.addWidget(self.delete_button)
+
+        self.move_button = QPushButton("&Recategorize", self)
+        self.move_button.clicked.connect(self.recategorize)
+        self.button_box.addWidget(self.move_button)
+
+        self.layout.addLayout(self.button_box)
+
         self.show_clip()
 
     def add_clips(self):
@@ -82,20 +94,23 @@ class ClipListViewer(QWidget):
         self.keys = [clip.title for clip in self.clips]
         self.clip.addItems(self.keys)
 
+    def selected(self):
+        return [clip for clip in self.clips
+                   if clip.title ==
+                self.keys[self.clip.currentIndex()]][0]
     def show_clip(self):
-        clip = [clip for clip in self.clips
-                if clip.title ==
-                   self.keys[self.clip.currentIndex()]][0]
-        self.display.setHtml(clip.html)
+        self.display.setHtml(self.selected().html)
 
     def delete(self):
-        clip = [clip for clip in self.clips
-                if clip.title ==
-                   self.keys[self.clip.currentIndex()]][0]
-        self.clips.remove(clip)
+        self.clips.remove(self.selected())
         save_to_file("clips.brc", self.manager)
         self.add_clips()
 
+    def recategorize(self):
+        category, ok = QInputDialog.getItem(None, "Recategorize", "New category:", self.manager.categories.keys())
+        self.manager.move(self.selected(), self.category, category)
+        save_to_file("clips.brc", self.manager)
+        self.manager_ui.refresh_viewers()
 
 class ClipManagerViewer(QDialog):
     def __init__(self, manager):
@@ -111,11 +126,19 @@ class ClipManagerViewer(QDialog):
         self.layout = QFormLayout(self)
         self.tabs = QTabWidget()
         self.layout.addRow(self.tabs)
-        for category in self.manager.categories.keys():
-            self.tabs.addTab(ClipListViewer(self.manager.categories[category],
-                self.manager,
-                self), category)
+        self.clip_viewers = [ClipListViewer(category,
+                                            self.manager.categories[category],
+                                            self.manager,
+                                            self,
+                                            self)
+                             for category in self.manager.categories.keys()]
+        for viewer in self.clip_viewers:
+            self.tabs.addTab(viewer, viewer.category)
         self.setLayout(self.layout)
+
+    def refresh_viewers(self):
+        for viewer in self.clip_viewers:
+            viewer.add_clips()
 
     def run(self):
         self.show()
@@ -125,6 +148,34 @@ class ClipManagerViewer(QDialog):
         self.manager.delete(self.current_clip, category)
         self.set_up_ui()
 
+class ClipFiler(QDialog):
+    def __init__(self, categories, parent=None):
+        QDialog.__init__(self, parent)
+        self.setModal(True)
+        self.layout = QFormLayout()
+        self.setLayout(self.layout)
+
+        self.category = QComboBox(self)
+        self.category.addItems(categories)
+
+        self.layout.addRow("&Category:", self.category)
+
+        self.title = QLineEdit(self)
+        self.layout.addRow("&Title:", self.title)
+
+        self.button_box = QHBoxLayout()
+        self.button_box.addStretch(1)
+
+        self.ok = QPushButton("&OK", self)
+        self.ok.clicked.connect(self.ok_clicked)
+
+        self.button_box.addWidget(self.ok)
+    def run(self, callback):
+        self.callback = callback
+        self.show()
+    def ok_clicked(self):
+        self.hide()
+        self.callback()
 
 class BibleReader(QMainWindow, BibleReaderModel):
     """The main UI for the bible reader app"""
@@ -264,12 +315,14 @@ class BibleReader(QMainWindow, BibleReaderModel):
 
 
     def interactive_add_clip(self):
-        title, ok = QInputDialog.getText(self, 'Add Selected Clip',
-            'Title:')
-        if ok:
+        cf = ClipFiler(self.clip_manager.categories.keys())
+
+        def cb():
             html = self.display.selectedHtml()
-            self.add_clip(title, html)
+            self.add_clip(cf.title.text(), html)
             self.set_up_clip_menu()
+
+        cf.run(cb)
 
     def browse(self):
         pl = PassageSelector()

@@ -15,8 +15,8 @@ class BibleReaderModel(object):
         bible = Bible(self.version, font=self.font)
         return bible.query(passage_ref)
 
-    def add_clip(self, title, html):
+    def add_clip(self, title, html, category="unclassified"):
         clip = Clip(title, html)
-        self.clip_manager.add(clip)
+        self.clip_manager.add(clip, category)
         save_to_file("clips.brc", self.clip_manager)
 

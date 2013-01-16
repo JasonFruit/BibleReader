@@ -233,12 +233,37 @@ class BibleReader(QMainWindow, BibleReaderModel):
         self.view_menu = self.menuBar().addMenu("Vie&w")
         self.set_up_view_menu()
 
+        self.add_shortcuts()
         self.lookup(self.last_passage)
+
+    def toggle_fullscreen(self):
+
+        if self.isFullScreen():
+            self.showMaximized()
+        else:
+            self.showFullScreen()
+
+        self.resizeEvent()
+
+    def add_shortcuts(self):
+        fullscreen_shortcut = QShortcut(QKeySequence(self.tr("Alt+F")), self)
+        fullscreen_shortcut.activated.connect(self.toggle_fullscreen)
+
+        lookup_shortcut = QShortcut(QKeySequence(self.tr("Ctrl+L")), self)
+        lookup_shortcut.activated.connect(self.interactive_lookup)
+
+        browse_shortcut = QShortcut(QKeySequence(self.tr("Ctrl+B")), self)
+        browse_shortcut.activated.connect(self.browse)
+
+        print_shortcut = QShortcut(QKeySequence(self.tr("Ctrl+P")), self)
+        print_shortcut.activated.connect(self.print_)
+
+        version_shortcut = QShortcut(QKeySequence(self.tr("Ctrl+R")), self)
+        version_shortcut.activated.connect(self.switch_version)
 
     def set_up_passage_menu(self):
         # menu option to look up a passage
         lookup_action = QAction("&Look up", self)
-        lookup_action.setShortcut("Ctrl+L")
         lookup_action.triggered.connect(self.interactive_lookup)
 
         # add it to the passage menu
@@ -246,7 +271,6 @@ class BibleReader(QMainWindow, BibleReaderModel):
 
         # menu option to browse for a passage
         browse_action = QAction("&Browse", self)
-        browse_action.setShortcut("Ctrl+B")
         browse_action.triggered.connect(self.browse)
 
         # add it to the passage menu
@@ -262,20 +286,16 @@ class BibleReader(QMainWindow, BibleReaderModel):
             self.display.print_(printDialog.printer())
 
     def set_up_version_menu(self):
-        # return a callback for the version
-        def make_callback(version):
-            def cb():
-                self.version = version
-                self.lookup(self.last_passage)
+        version_action = QAction("&Version", self)
+        version_action.triggered.connect(self.switch_version)
+        self.version_menu.addAction(version_action)
 
-            return cb
+    def switch_version(self):
+        version, ok = QInputDialog.getItem(None, "Select Version", "Version:", self.versions)
 
-        # loop through the versions, adding them to the version menu
-        for version in self.versions:
-            action = QAction("&%s" % version.upper(), self)
-            action.setShortcut("Ctrl+%s" % version.upper()[0])
-            action.triggered.connect(make_callback(version))
-            self.version_menu.addAction(action)
+        if ok:
+            self.version = version
+            self.lookup(self.last_passage)
 
     def set_up_clip_menu(self):
         """Add choices to the clip menu"""

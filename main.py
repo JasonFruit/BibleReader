@@ -193,6 +193,8 @@ class ClipFiler(QDialog):
         self.ok.clicked.connect(self.ok_clicked)
 
         self.button_box.addWidget(self.ok)
+
+        self.layout.addRow(self.button_box)
     def run(self, callback):
         self.callback = callback
         self.show()

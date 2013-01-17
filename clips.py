@@ -45,10 +45,3 @@ def save_to_file(filename, manager):
 
 def load_from_file(filename):
     return cPickle.load(open(filename, "rb"))
-
-if __name__ == "__main__":
-    clip_manager = ClipManager()
-    clip_manager.add(Clip("Test 1", ""))
-    clip_manager.add(Clip("Test 2", ""))
-    clip_manager.add(Clip("Test 3", ""))
-    save_to_file("clips.brc", clip_manager)

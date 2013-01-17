@@ -5,6 +5,7 @@ import sys
 from bible_reader import BibleReaderModel
 from books import books_order
 from clips import *
+import rc, first_run
 
 from PySide.QtGui import *
 from PySide.QtWebKit import *
@@ -117,13 +118,13 @@ class ClipListViewer(QWidget):
 
     def delete(self):
         self.clips.remove(self.selected())
-        save_to_file("clips.brc", self.manager)
+        save_to_file(rc.clip_rc(), self.manager)
         self.add_clips()
 
     def recategorize(self):
         category, ok = QInputDialog.getItem(None, "Recategorize", "New category:", self.manager.categories.keys())
         self.manager.move(self.selected(), self.category, category)
-        save_to_file("clips.brc", self.manager)
+        save_to_file(rc.clip_rc(), self.manager)
         self.manager_ui.refresh_viewers()
 
 class ClipManagerViewer(QDialog):
@@ -371,6 +372,9 @@ class BibleReader(QMainWindow, BibleReaderModel):
 
     def lookup(self, passage_ref):
         self.display.setHtml(self.get_html(passage_ref))
+
+if not rc.rc_exists():
+    first_run.first_run()
 
 reader = BibleReader()
 reader.showMaximized()

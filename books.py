@@ -1,7 +1,5 @@
 import pickle
 
-abbrevs = pickle.load(open("books.brb", "rb"))
-
 books_order = ["Genesis",
                "Exodus",
                "Leviticus",

@@ -4,7 +4,8 @@ import urllib2
 import warnings
 from lxml import etree
 
-# we know we'll get a warning about not having the C version of NameMapper on importing or using Cheetah, so let's hide it
+# we know we'll get a warning about not having the C version of NameMapper on
+# importing or using Cheetah, so let's hide it
 warnings.simplefilter('ignore')
 
 from Cheetah.Template import Template
@@ -13,7 +14,8 @@ __author__ = 'jason'
 
 class Ephesians414Session(object):
     def __init__(self, font, version="kjv"):
-        self.base_url = "http://api.preachingcentral.com/bible.php?passage=%s&version=" + version
+        self.base_url = ("http://api.preachingcentral.com/bible.php?" +
+                         "passage=%s&version=" + version)
         self.font = font
 
     def query(self, passage_ref):
@@ -98,4 +100,3 @@ class Bible(object):
 
     def query(self, passage):
         return self.lookup.query(passage)
-

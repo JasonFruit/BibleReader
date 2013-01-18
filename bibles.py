@@ -85,6 +85,12 @@ class NETSession(object):
         url = self.base_url % passage
         page = urllib2.urlopen(url)
         passage_html = page.read()
+        # about all the error handling we can do, since if it can extract
+        # meaningless numbers, NET returns a passage from Genesis.  To get
+        # here, you'd have to enter something like "Beelzebub, yo".  Our
+        # target audience is above that, I think.
+        if passage_html == "":
+            return "<p>Bad reference: %s.</p>" % passage_ref
         passage_html = self.rearrange_html(passage_html)
         tmpl = Template(file='net.tmpl',
             searchList={'passage': passage_ref,

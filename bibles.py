@@ -13,24 +13,28 @@ from Cheetah.Template import Template
 __author__ = 'jason'
 
 class Ephesians414Session(object):
+    """Fetcher of formatted texts using the Ephesians 4:14 API"""
     def __init__(self, font, version="kjv"):
         self.base_url = ("http://api.preachingcentral.com/bible.php?" +
                          "passage=%s&version=" + version)
         self.font = font
 
     def query(self, passage_ref):
+        """return formatted HTML for the passage specified by passage_ref"""
         passage = '+'.join(passage_ref.split())
         url = (self.base_url % passage)
         response = urllib2.urlopen(url)
         passage_xml = response.read()
-        return self.transform(passage_xml)
+        return self._transform(passage_xml)
 
-    def transform(self, xml):
+    def _transform(self, xml):
+        """Use XSLT to transform the XML response to ugly but workable HTML"""
         source = etree.fromstring(xml)
         xslt = etree.parse("414.xml")
         transform = etree.XSLT(xslt)
         result = etree.tostring(transform(source))
-        # this is ugly.
+        # this is ugly, but I don't think the string "the_font" appears in
+        # the Bible.
         return result.replace("the_font", self.font)
 
 

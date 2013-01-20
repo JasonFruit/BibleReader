@@ -239,6 +239,8 @@ class BibleReader(QMainWindow, BibleReaderModel):
         self.add_shortcuts()
         self.lookup(self.last_passage)
 
+        app.lastWindowClosed.connect(self.save_rc)
+
     def toggle_fullscreen(self):
 
         if self.isFullScreen():

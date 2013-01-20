@@ -17,7 +17,7 @@ class ClipManager(object):
 
     def add_category(self, category):
         """Add a new empty category, if it doesn't already exist"""
-        if not category in self.categories.keys:
+        if not category in self.categories.keys():
             self.categories[category] = []
 
     def remove_category(self, category):

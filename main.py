@@ -264,6 +264,11 @@ class BibleReader(QMainWindow, BibleReaderModel):
         version_shortcut = QShortcut(QKeySequence(self.tr("Ctrl+R")), self)
         version_shortcut.activated.connect(self.switch_version)
 
+        # on Windows or Unix window managers that don't map F11 to
+        # fullscreen, do it for them
+        fullscreen_shortcut = QShortcut(QKeySequence(self.tr("F11")), self)
+        fullscreen_shortcut.activated.connect(self.toggle_fullscreen)
+        
     def set_up_passage_menu(self):
         # menu option to look up a passage
         lookup_action = QAction("&Look up", self)

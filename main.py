@@ -179,6 +179,8 @@ class ClipFiler(QDialog):
         self.layout = QFormLayout()
         self.setLayout(self.layout)
 
+        self.categories = categories
+
         self.category = QComboBox(self)
         self.category.addItems(categories)
 
@@ -196,6 +198,8 @@ class ClipFiler(QDialog):
         self.button_box.addWidget(self.ok)
 
         self.layout.addRow(self.button_box)
+    def getCategory(self):
+        return self.categories[self.category.currentIndex()]
     def run(self, callback):
         self.callback = callback
         self.show()
@@ -355,7 +359,7 @@ class BibleReader(QMainWindow, BibleReaderModel):
 
         def cb():
             html = self.display.selectedHtml()
-            self.add_clip(cf.title.text(), html)
+            self.add_clip(cf.title.text(), html, cf.getCategory())
             self.set_up_clip_menu()
 
         cf.run(cb)

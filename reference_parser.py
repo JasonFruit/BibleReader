@@ -639,11 +639,12 @@ class VerseMath(object):
 
         while remaining > 0:
             remaining = remaining - books[book][chapter - 1]
-            if chapter == len(books[book]):
-                book = self.next_book(book)
-                chapter = 1
-            else:
-                chapter += 1
+            if remaining > 0:
+                if chapter == len(books[book]):
+                    book = self.next_book(book)
+                    chapter = 1
+                else:
+                    chapter += 1
 
         return Verse(book, chapter, books[book][chapter - 1] + remaining)
     
@@ -831,5 +832,5 @@ class ReferenceParser(object):
 
 if __name__ == "__main__":
     import sys
-    rng = ReferenceParser().parse(sys.argv[1])
-    print VerseMath().add(rng, 30)
+    rng = ReferenceParser().parse("John 1:1")
+    print VerseMath().add(rng, 500)

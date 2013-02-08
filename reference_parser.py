@@ -663,7 +663,12 @@ class VerseMath(object):
     def gt(self, verse1, verse2):
         return not (self.lt(verse1, verse2) or
                     self.eq(verse1, verse2))
-
+    def lte(self, verse1, verse2):
+        return not self.gt(verse1, verse2)
+    def gte(self, verse1, verse2):
+        return not self.lt(verse1, verse2)
+    def contains(self, rng, verse):
+        return self.lte(rng.from_, verse) and self.gte(rng.to, verse)
 
 class Verse(object):
     """Represents a verse of the Bible"""

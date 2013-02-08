@@ -656,6 +656,14 @@ class VerseMath(object):
                 ((verse1.book == verse2.book) and
                  (verse1.chapter == verse2.chapter) and
                  (verse1.verse < verse2.verse)))
+    def eq(self, verse1, verse2):
+        return ((verse1.book == verse2.book) and
+                (verse1.chapter == verse2.chapter) and
+                (verse1.verse == verse2.verse))
+    def gt(self, verse1, verse2):
+        return not (self.lt(verse1, verse2) or
+                    self.eq(verse1, verse2))
+
 
 class Verse(object):
     """Represents a verse of the Bible"""

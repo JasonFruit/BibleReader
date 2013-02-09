@@ -1,25 +1,25 @@
-from clips import *
-from bibles import Bible
-import rc
+from .clips import *
+from .bibles import Bible
+from .rc import *
 import pickle
 
 def read_rc():
 
     try:
-        tmp_rc = pickle.load(open(rc.rc(), "rb"))
+        tmp_rc = pickle.load(open(rc(), "rb"))
     except:
-        return rc.default_rc
+        return default_rc
     
-    for key in rc.default_rc.keys():
+    for key in default_rc.keys():
         try:
             tmp_rc[key]
         except KeyError:
-            tmp_rc[key] = rc.default_rc[key]
+            tmp_rc[key] = default_rc[key]
             
     return tmp_rc
 
 def write_rc(the_rc):
-    pickle.dump(the_rc, open(rc.rc(), "wb"))
+    pickle.dump(the_rc, open(rc(), "wb"))
 
 class BibleReaderModel(object):
     def __init__(self):
@@ -28,7 +28,7 @@ class BibleReaderModel(object):
                          "kjv", "net", "web", "ylt"]
 
         self.version = self.rc["version"]
-        self.clip_manager = load_from_file(rc.clip_rc())
+        self.clip_manager = load_from_file(clip_rc())
         self.font = self.rc["font"]
         self.last_passage = self.rc["init_passage"]
 
@@ -40,7 +40,7 @@ class BibleReaderModel(object):
     def add_clip(self, title, html, category="unclassified"):
         clip = Clip(title, html)
         self.clip_manager.add(clip, category)
-        save_to_file(rc.clip_rc(), self.clip_manager)
+        save_to_file(clip_rc(), self.clip_manager)
 
     def save_rc(self):
         self.rc["version"] = self.version

@@ -663,12 +663,6 @@ class VerseMath(object):
     def gt(self, verse1, verse2):
         return not (self.lt(verse1, verse2) or
                     self.eq(verse1, verse2))
-    def lte(self, verse1, verse2):
-        return not self.gt(verse1, verse2)
-    def gte(self, verse1, verse2):
-        return not self.lt(verse1, verse2)
-    def contains(self, rng, verse):
-        return self.lte(rng.from_, verse) and self.gte(rng.to, verse)
 
 class Verse(object):
     """Represents a verse of the Bible"""
@@ -676,6 +670,14 @@ class Verse(object):
         self.book = book
         self.chapter = chapter
         self.verse = verse
+        self.math = VerseMath()
+    def __cmp__(self, other):
+        if self.math.lt(self, other):
+            return -1
+        elif self.math.eq(self, other):
+            return 0
+        else:
+            return 1
     def __repr__(self):
         if self.verse:
             return "%s %s:%s" % (self.book,
@@ -695,6 +697,17 @@ class Range(object):
 
     def __repr__(self):
         return "%s - %s" % (self.from_, self.to)
+
+    def contains(self, ref):
+        if type(ref) == Verse:
+            return self.from_ <= ref <= self.to
+        elif type(ref) == Range:
+            return self.contains(ref.from_) and self.contains(ref.to)
+    def __cmp__(self, other):
+        if type(other) == Range:
+            other = other.from_
+
+        return self.from_.__cmp__(other)
     
 class VerseParser(object):
     """A parser for Bible verse references"""
@@ -841,9 +854,36 @@ class ReferenceParser(object):
             
         else:
             # it's a simple verse reference
-            return self.validate(VerseParser().parse(reference))
+            output = self.validate(VerseParser().parse(reference))
+
+            if type(output) == Verse:
+                if output.chapter == None:
+                    return Range(Verse(output.book, 1, 1),
+                                 Verse(output.book,
+                                       len(books[output.book]),
+                                       books[output.book][-1]))
+                elif output.verse == None:
+                    return Range(Verse(output.book,
+                                       output.chapter,
+                                       1),
+                                 Verse(output.book,
+                                       output.chapter,
+                                       books[output.book][output.chapter - 1]))
+                else:
+                    return output
+            else:
+                return output
 
 if __name__ == "__main__":
     import sys
-    rng = ReferenceParser().parse("John 1:1")
-    print VerseMath().add(rng, 500)
+    rp = ReferenceParser()
+    verse = rp.parse("John 1:1")
+    print VerseMath().add(verse, 500)
+    print rp.parse("Mark 1:1") < rp.parse("John 1:1")
+    print rp.parse("Mark 1:1") == rp.parse("Mark 1:1")
+    print rp.parse("Mark 1:1") > rp.parse("Mt 1:1")
+    print rp.parse("Mark 1-3").contains(rp.parse("Mark 2:1"))
+    print rp.parse("Mark 1-3").contains(rp.parse("Mark 2-4"))
+    print rp.parse("Mark 1-3") > rp.parse("Mark 2-4")
+    print rp.parse("Mark 1-3") < rp.parse("Mark 2:1")
+    print rp.parse("John")

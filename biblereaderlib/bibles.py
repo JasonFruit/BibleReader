@@ -97,40 +97,44 @@ class Ephesians414Session(object):
 
 
 esv_tmpl = """<html>
-<head>
-    <title>$passage: ESV</title>
-    <style>
-        .esv {
-            width: 35em;
-            margin: 0px auto;
-            text-align: justify;
-            font-family: "$font";
-            sans;
-        }
+    <head>
+        <title>$passage: ESV</title>
+        <style>
+            body {
+                width: 35em;
+                margin: 0px auto;
+                font-family: "$font";
+                sans;
+            }
 
-        span.verse-num {
-            font-family: serif;
-            font-weight: light;
-            vertical-align: super;
-            font-size: 70%;
-        }
+            .esv {
+                text-align: justify;
+            }
 
-        span.chapter-num {
-            font-family: serif;
-            font-weight: bold;
-            vertical-align: super;
-            font-size: 90%;
-        }
+            span.verse-num {
+                font-family: serif;
+                font-weight: light;
+                vertical-align: super;
+                font-size: 70%;
+            }
 
-        .footnotes {
-            font-size: 70%;
-            color: #555555;
-        }
-    </style>
-</head>
-<body>
-$content
-</body>
+            span.chapter-num {
+                font-family: serif;
+                font-weight: bold;
+                vertical-align: super;
+                font-size: 90%;
+            }
+
+            .footnotes {
+                font-size: 70%;
+                color: #555555;
+            }
+        </style>
+    </head>
+    <body>
+    $content
+    <div>Scripture taken from The Holy Bible, English Standard Version. Copyright &copy;2001 by <a href="http://www.crosswaybibles.org">Crossway Bibles</a>, a publishing ministry of Good News Publishers. Used by permission. All rights reserved. Text provided by the <a href="http://www.gnpcb.org/esv/share/services/">Crossway Bibles Web Service</a></div>
+    </body>
 </html>
 """
 
@@ -181,6 +185,10 @@ net_tmpl = """<html>
 <body>
 <h2>$passage.title()</h2>
 $content
+<p style="font-size: 8pt; color:#555555;">Scripture quoted by permission. All scripture quotations, unless otherwise indicated, are
+taken from the NET Bible&reg; copyright &copy;1996-2006 by Biblical Studies Press, L.L.C.
+www.bible.org All rights reserved. This material is available in its entirety as a free
+download or online web use at <a href="http://netbible.org/">http://netbible.org/</a>.</p>
 </body>
 </html>
 """

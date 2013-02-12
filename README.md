@@ -14,9 +14,10 @@ Status
 
 This application is under initial, pre-release development, and
 is not really ready for public use.  Though it works fairly well,
-copyright notices and source attributions have not yet been
-implemented in accordance with licensing for the various versions;
-please don't use it until that is resolved.
+and copyright notices and source attributions have been
+implemented in accordance with licensing for the various versions,
+there are still licensing questions to be answered regarding the
+ESV translation; please don't use it until that is resolved.
 
 A Note On Licensing
 -----------------------------------------------------------------

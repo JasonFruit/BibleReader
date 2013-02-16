@@ -9,6 +9,7 @@ from .clips import *
 from .rc import *
 from .first_run import *
 
+from PySide.QtCore import *
 from PySide.QtGui import *
 from PySide.QtWebKit import *
 
@@ -209,6 +210,15 @@ class ClipFiler(QDialog):
         self.hide()
         self.callback()
 
+class OverlayButton(QPushButton):
+    def __init__(self, text, parent=None):
+        QPushButton.__init__(self, text, parent)
+        palette = QPalette(self.palette())
+        palette.setColor(palette.Button, Qt.transparent)
+        palette.setColor(palette.Shadow, Qt.transparent)
+        palette.setColor(palette.Dark, Qt.transparent)
+        self.setPalette(palette)
+
 class BibleReader(QMainWindow, BibleReaderModel):
     """The main UI for the bible reader app"""
 
@@ -221,6 +231,14 @@ class BibleReader(QMainWindow, BibleReaderModel):
         # add the main scripture display widget
         self.display = QWebView(self)
         self.display.setMinimumSize(600, 400)
+
+        self.back_button = OverlayButton("<", self.display)
+        self.back_button.setMinimumSize(35, 100)
+        self.back_button.move(0, 0)
+
+        self.fwd_button = OverlayButton(">", self.display)
+        self.fwd_button.setMinimumSize(35, 100)
+        self.fwd_button.move(self.width() - self.fwd_button.width(), 0)
 
         # it's all that's contained in this main window
         self.setCentralWidget(self.display)
@@ -356,6 +374,17 @@ class BibleReader(QMainWindow, BibleReaderModel):
             self.menuBar().hide()
         else:
             self.menuBar().show()
+
+        self.size_nav_buttons()
+
+    def size_nav_buttons(self):
+        self.back_button.setMinimumHeight(self.height())
+        self.back_button.setMaximumHeight(self.height())
+
+        self.fwd_button.setMinimumHeight(self.height())
+        self.fwd_button.setMaximumHeight(self.height())
+        self.fwd_button.move(self.width() - self.fwd_button.width(), 0)
+
     def interactive_add_clip(self):
         cf = ClipFiler(self.clip_manager.categories.keys())
 
@@ -393,4 +422,5 @@ def main():
 
     reader = BibleReader()
     reader.showMaximized()
+    reader.size_nav_buttons()
     app.exec_()

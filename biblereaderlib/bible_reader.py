@@ -1,4 +1,3 @@
-from .clips import *
 from .bibles import Bible
 from .rc import *
 import pickle
@@ -28,7 +27,6 @@ class BibleReaderModel(object):
                          "kjv", "net", "web", "ylt"]
 
         self.version = self.rc["version"]
-        self.clip_manager = load_from_file(clip_rc())
         self.font = self.rc["font"]
         self.last_passage = self.rc["init_passage"]
 
@@ -36,11 +34,6 @@ class BibleReaderModel(object):
         self.last_passage = passage_ref
         bible = Bible(self.version, font=self.font)
         return bible.query(passage_ref)
-
-    def add_clip(self, title, html, category="unclassified"):
-        clip = Clip(title, html)
-        self.clip_manager.add(clip, category)
-        save_to_file(clip_rc(), self.clip_manager)
 
     def save_rc(self):
         self.rc["version"] = self.version

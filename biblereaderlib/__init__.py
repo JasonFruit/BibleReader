@@ -5,7 +5,6 @@ import sys
 
 from .bible_reader import BibleReaderModel
 from .books import books_order
-from .clips import *
 from .rc import *
 from .first_run import *
 
@@ -58,158 +57,6 @@ class PassageSelector(QDialog):
         self.lookup.clicked.connect(success_callback)
         self.show()
 
-class ClipListViewer(QWidget):
-    def __init__(self, category, clips, manager, manager_ui, parent=None):
-        QWidget.__init__(self, parent)
-        self.category = category
-        self.clips = clips
-        self.manager = manager
-        self.manager_ui = manager_ui
-        self.set_up_ui()
-
-    def set_up_ui(self):
-        self.layout = QVBoxLayout()
-        self.setLayout(self.layout)
-        self.keys = [clip.title for clip in self.clips]
-        self.clip = QComboBox(self)
-        self.add_clips()
-        self.clip.currentIndexChanged.connect(self.show_clip)
-        self.layout.addWidget(self.clip)
-        self.display = QWebView(self)
-        self.layout.addWidget(self.display)
-
-        self.button_box = QHBoxLayout()
-
-        self.add_category_button = QPushButton("&Add category", self)
-        self.add_category_button.clicked.connect(self.add_category)
-        self.button_box.addWidget(self.add_category_button)
-
-        self.button_box.addStretch(1)
-
-        self.delete_button = QPushButton("&Delete", self)
-        self.delete_button.clicked.connect(self.delete)
-        self.button_box.addWidget(self.delete_button)
-
-        self.move_button = QPushButton("&Recategorize", self)
-        self.move_button.clicked.connect(self.recategorize)
-        self.button_box.addWidget(self.move_button)
-
-        self.layout.addLayout(self.button_box)
-
-        self.show_clip()
-
-    def add_category(self):
-        new_category, ok = QInputDialog.getText(self, "Add Category", "Category:")
-        if ok:
-            self.manager.add_category(new_category)
-            self.manager_ui.add_category(new_category)
-
-    def add_clips(self):
-        self.clip.clear()
-        self.keys = [clip.title for clip in self.clips]
-        self.clip.addItems(self.keys)
-
-    def selected(self):
-        return [clip for clip in self.clips
-                   if clip.title ==
-                self.keys[self.clip.currentIndex()]][0]
-    def show_clip(self):
-        try:
-            self.display.setHtml(self.selected().html)
-        except IndexError:
-            pass
-
-    def delete(self):
-        self.clips.remove(self.selected())
-        save_to_file(clip_rc(), self.manager)
-        self.add_clips()
-
-    def recategorize(self):
-        category, ok = QInputDialog.getItem(None, "Recategorize", "New category:", self.manager.categories.keys())
-        self.manager.move(self.selected(), self.category, category)
-        save_to_file(clip_rc(), self.manager)
-        self.manager_ui.refresh_viewers()
-
-class ClipManagerViewer(QDialog):
-    def __init__(self, manager):
-        QDialog.__init__(self)
-        self.setMinimumSize(500, 300)
-        self.setModal(True)
-        self.setWindowTitle("Clip Viewer")
-        self.manager = manager
-        self.set_up_ui()
-
-    def set_up_ui(self):
-        self.setLayout(None)
-        self.layout = QFormLayout(self)
-        self.tabs = QTabWidget()
-        self.layout.addRow(self.tabs)
-        self.clip_viewers = [ClipListViewer(category,
-                                            self.manager.categories[category],
-                                            self.manager,
-                                            self,
-                                            self)
-                             for category in self.manager.categories.keys()]
-        for viewer in self.clip_viewers:
-            self.tabs.addTab(viewer, viewer.category)
-        self.setLayout(self.layout)
-
-    def add_category(self, category):
-        viewer = ClipListViewer(category,
-                                self.manager.categories[category],
-                                self.manager,
-                                self,
-                                self)
-        self.clip_viewers.append(viewer)
-        self.tabs.addTab(viewer, viewer.category)
-
-    def refresh_viewers(self):
-        for viewer in self.clip_viewers:
-            viewer.add_clips()
-
-    def run(self):
-        self.show()
-
-    def delete(self):
-        category = self.manager.categories.keys()[self.tabs.currentIndex()]
-        self.manager.delete(self.current_clip, category)
-        self.set_up_ui()
-
-class ClipFiler(QDialog):
-    def __init__(self, categories, parent=None):
-        QDialog.__init__(self, parent)
-        self.setModal(True)
-        self.layout = QFormLayout()
-        self.setLayout(self.layout)
-
-        self.categories = categories
-
-        self.category = QComboBox(self)
-        self.category.addItems(categories)
-
-        self.layout.addRow("&Category:", self.category)
-
-        self.title = QLineEdit(self)
-        self.layout.addRow("&Title:", self.title)
-
-        self.button_box = QHBoxLayout()
-        self.button_box.addStretch(1)
-
-        self.ok = QPushButton("&OK", self)
-        self.ok.clicked.connect(self.ok_clicked)
-
-        self.button_box.addWidget(self.ok)
-
-        self.layout.addRow(self.button_box)
-    def getCategory(self):
-        return self.categories[self.category.currentIndex()]
-    def run(self, callback):
-        self.callback = callback
-        self.show()
-    def ok_clicked(self):
-        self.hide()
-        self.callback()
-
 class OverlayButton(QPushButton):
     def __init__(self, text, parent=None):
         QPushButton.__init__(self, text, parent)
@@ -252,10 +99,6 @@ class BibleReader(QMainWindow, BibleReaderModel):
         self.version_menu = self.menuBar().addMenu("&Version")
 
         self.set_up_version_menu()
-
-        # add a menu for managing clips and set it up
-        self.clip_menu = self.menuBar().addMenu("&Clips")
-        self.set_up_clip_menu()
 
         self.view_menu = self.menuBar().addMenu("Vie&w")
         self.set_up_view_menu()
@@ -331,24 +174,6 @@ class BibleReader(QMainWindow, BibleReaderModel):
             self.version = version
             self.lookup(self.last_passage)
 
-    def set_up_clip_menu(self):
-        """Add choices to the clip menu"""
-        # clear any existing choices
-        self.clip_menu.clear()
-        # add an option to add clips
-        self.add_clip_action = QAction("Clip &selection", self)
-        self.add_clip_action.triggered.connect(self.interactive_add_clip)
-        self.clip_menu.addAction(self.add_clip_action)
-
-        view_action = QAction("&View", self)
-        view_action.triggered.connect(self.view_clips)
-        self.clip_menu.addAction(view_action)
-
-    def view_clips(self):
-        global viewer
-        viewer = ClipManagerViewer(self.clip_manager)
-        viewer.run()
-
     def set_up_view_menu(self):
         font_menu = self.view_menu.addMenu("&Font")
         font_db = QFontDatabase()
@@ -384,16 +209,6 @@ class BibleReader(QMainWindow, BibleReaderModel):
         self.fwd_button.setMinimumHeight(self.height())
         self.fwd_button.setMaximumHeight(self.height())
         self.fwd_button.move(self.width() - self.fwd_button.width(), 0)
-
-    def interactive_add_clip(self):
-        cf = ClipFiler(self.clip_manager.categories.keys())
-
-        def cb():
-            html = self.display.selectedHtml()
-            self.add_clip(cf.title.text(), html, cf.getCategory())
-            self.set_up_clip_menu()
-
-        cf.run(cb)
 
     def browse(self):
         pl = PassageSelector()

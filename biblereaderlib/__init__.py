@@ -1,20 +1,22 @@
 __author__ = 'jason'
-__all__ = ['main']
 
 import sys
-
-from .bible_reader import BibleReaderModel
-from .books import books_order
-from .rc import *
-from .first_run import *
 
 from PySide.QtCore import *
 from PySide.QtGui import *
 from PySide.QtWebKit import *
 
+from .bible_reader import BibleReaderModel
+from .books import books_order
+from .rc import *
+from .first_run import *
+from annotations import *
+from annotations_ui import *
+
 app = QApplication(sys.argv)
 
 app_name = "Bible Reader"
+
 
 class PassageSelector(QDialog):
     """Convenient interface for choosing a passage of scripture"""
@@ -57,6 +59,7 @@ class PassageSelector(QDialog):
         self.lookup.clicked.connect(success_callback)
         self.show()
 
+
 class OverlayButton(QPushButton):
     def __init__(self, text, parent=None):
         QPushButton.__init__(self, text, parent)
@@ -65,6 +68,7 @@ class OverlayButton(QPushButton):
         palette.setColor(palette.Shadow, Qt.transparent)
         palette.setColor(palette.Dark, Qt.transparent)
         self.setPalette(palette)
+
 
 class BibleReader(QMainWindow, BibleReaderModel):
     """The main UI for the bible reader app"""
@@ -137,7 +141,7 @@ class BibleReader(QMainWindow, BibleReaderModel):
         # fullscreen, do it for them
         fullscreen_shortcut = QShortcut(QKeySequence(self.tr("F11")), self)
         fullscreen_shortcut.activated.connect(self.toggle_fullscreen)
-        
+
     def set_up_passage_menu(self):
         # menu option to look up a passage
         lookup_action = QAction("&Look up", self)
@@ -221,8 +225,8 @@ class BibleReader(QMainWindow, BibleReaderModel):
 
     def interactive_lookup(self):
         passage_ref, ok = QInputDialog.getText(self,
-            'Passage Lookup',
-            'Passage reference:')
+                                               'Passage Lookup',
+                                               'Passage reference:')
 
         if ok:
             self.lookup(passage_ref)
@@ -230,8 +234,8 @@ class BibleReader(QMainWindow, BibleReaderModel):
     def lookup(self, passage_ref):
         self.display.setHtml(self.get_html(passage_ref))
 
+
 def main():
-    
     if not rc_exists():
         first_run()
 

@@ -77,6 +77,8 @@ class BibleReader(QMainWindow, BibleReaderModel):
         QMainWindow.__init__(self)
         BibleReaderModel.__init__(self)
 
+        self.parser = ReferenceParser()
+        self.annotations = AnnotationManager()
         self.setWindowTitle(app_name)
 
         # add the main scripture display widget
@@ -106,6 +108,9 @@ class BibleReader(QMainWindow, BibleReaderModel):
 
         self.view_menu = self.menuBar().addMenu("Vie&w")
         self.set_up_view_menu()
+
+        self.annotation_menu = self.menuBar().addMenu("&Annotations")
+        self.set_up_annotation_menu()
 
         self.add_shortcuts()
         self.lookup(self.last_passage)
@@ -230,6 +235,30 @@ class BibleReader(QMainWindow, BibleReaderModel):
 
         if ok:
             self.lookup(passage_ref)
+
+    def set_up_annotation_menu(self):
+        add_action = QAction("&Add", self)
+        add_action.triggered.connect(self.add_annotation)
+        self.annotation_menu.addAction(add_action)
+
+    def add_annotation(self):
+        passage_ref = self.last_passage
+
+        if len(self.annotations.keys()) > 0:
+            category, ok = QInputDialog(self, "Annotation Category", "Category:", self.annotations.keys())
+        else:
+            category, ok = "uncategorized", True
+
+        if ok:
+            note = Annotation(self.parser.parse(passage_ref),
+                              "")
+            dlg = AnnotationDialog(note, self)
+
+            def print_note():
+                print note
+
+            dlg.accepted.connect(print_note)
+            dlg.exec_()
 
     def lookup(self, passage_ref):
         self.display.setHtml(self.get_html(passage_ref))

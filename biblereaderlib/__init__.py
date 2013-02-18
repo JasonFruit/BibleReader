@@ -79,6 +79,10 @@ class BibleReader(QMainWindow, BibleReaderModel):
 
         self.parser = ReferenceParser()
         self.annotations = AnnotationManager()
+
+        map(self.annotations.add_category,
+            ["Cat 1", "Cat 2", "Cat 3"])
+
         self.setWindowTitle(app_name)
 
         # add the main scripture display widget
@@ -177,7 +181,9 @@ class BibleReader(QMainWindow, BibleReaderModel):
         self.version_menu.addAction(version_action)
 
     def switch_version(self):
-        version, ok = QInputDialog.getItem(None, "Select Version", "Version:", self.versions)
+        version, ok = QInputDialog.getItem(None,
+                                           "Select Version", "Version:",
+                                           self.versions)
 
         if ok:
             self.version = version
@@ -245,7 +251,9 @@ class BibleReader(QMainWindow, BibleReaderModel):
         passage_ref = self.last_passage
 
         if len(self.annotations.keys()) > 0:
-            category, ok = QInputDialog(self, "Annotation Category", "Category:", self.annotations.keys())
+            category, ok = QInputDialog.getItem(self, "Annotation Category",
+                                                "Category:",
+                                                self.annotations.keys())
         else:
             category, ok = "uncategorized", True
 
@@ -254,10 +262,10 @@ class BibleReader(QMainWindow, BibleReaderModel):
                               "")
             dlg = AnnotationDialog(note, self)
 
-            def print_note():
-                print note
+            def add_note():
+                self.annotations[category].append(note)
 
-            dlg.accepted.connect(print_note)
+            dlg.accepted.connect(add_note)
             dlg.exec_()
 
     def lookup(self, passage_ref):

@@ -24,5 +24,4 @@ def clip_rc():
 def rc_exists():
     """Check if all the elements of the rc directory exist"""
     return (os.path.isdir(rc_dir()) and
-            os.path.exists(rc()) and
-            os.path.exists(clip_rc()))
+            os.path.exists(rc()))

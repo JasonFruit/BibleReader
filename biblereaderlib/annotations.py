@@ -32,6 +32,8 @@ class AnnotationManager(dict):
             for category in self.keys():
                 notes.extend(self.annotations(rng, category))
             return notes
+    def add_category(self, category):
+        self[category] = list()
 
 if __name__ == "__main__":
     man = AnnotationManager()

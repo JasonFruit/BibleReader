@@ -89,14 +89,6 @@ class BibleReader(QMainWindow, BibleReaderModel):
         self.display = QWebView(self)
         self.display.setMinimumSize(600, 400)
 
-        self.back_button = OverlayButton("<", self.display)
-        self.back_button.setMinimumSize(35, 100)
-        self.back_button.move(0, 0)
-
-        self.fwd_button = OverlayButton(">", self.display)
-        self.fwd_button.setMinimumSize(35, 100)
-        self.fwd_button.move(self.width() - self.fwd_button.width(), 0)
-
         # it's all that's contained in this main window
         self.setCentralWidget(self.display)
 
@@ -104,11 +96,6 @@ class BibleReader(QMainWindow, BibleReaderModel):
         self.passage_menu = self.menuBar().addMenu("&Passage")
 
         self.set_up_passage_menu()
-
-        # menu to select bible versions
-        self.version_menu = self.menuBar().addMenu("&Version")
-
-        self.set_up_version_menu()
 
         self.view_menu = self.menuBar().addMenu("Vie&w")
         self.set_up_view_menu()
@@ -143,9 +130,6 @@ class BibleReader(QMainWindow, BibleReaderModel):
         print_shortcut = QShortcut(QKeySequence(self.tr("Ctrl+P")), self)
         print_shortcut.activated.connect(self.print_)
 
-        version_shortcut = QShortcut(QKeySequence(self.tr("Ctrl+R")), self)
-        version_shortcut.activated.connect(self.switch_version)
-
         # on Windows or Unix window managers that don't map F11 to
         # fullscreen, do it for them
         fullscreen_shortcut = QShortcut(QKeySequence(self.tr("F11")), self)
@@ -175,20 +159,6 @@ class BibleReader(QMainWindow, BibleReaderModel):
         if printDialog.exec_() == QDialog.Accepted:
             self.display.print_(printDialog.printer())
 
-    def set_up_version_menu(self):
-        version_action = QAction("&Version", self)
-        version_action.triggered.connect(self.switch_version)
-        self.version_menu.addAction(version_action)
-
-    def switch_version(self):
-        version, ok = QInputDialog.getItem(None,
-                                           "Select Version", "Version:",
-                                           self.versions)
-
-        if ok:
-            self.version = version
-            self.lookup(self.last_passage)
-
     def set_up_view_menu(self):
         font_menu = self.view_menu.addMenu("&Font")
         font_db = QFontDatabase()
@@ -214,16 +184,6 @@ class BibleReader(QMainWindow, BibleReaderModel):
             self.menuBar().hide()
         else:
             self.menuBar().show()
-
-        self.size_nav_buttons()
-
-    def size_nav_buttons(self):
-        self.back_button.setMinimumHeight(self.height())
-        self.back_button.setMaximumHeight(self.height())
-
-        self.fwd_button.setMinimumHeight(self.height())
-        self.fwd_button.setMaximumHeight(self.height())
-        self.fwd_button.move(self.width() - self.fwd_button.width(), 0)
 
     def browse(self):
         pl = PassageSelector()
@@ -278,5 +238,4 @@ def main():
 
     reader = BibleReader()
     reader.showMaximized()
-    reader.size_nav_buttons()
     app.exec_()

@@ -31,6 +31,7 @@ ephesians_414_xslt = """<?xml version="1.0"?>
                         vertical-align: super;
                         font-size: 70%;
                         padding-left: 1em;
+                        padding-right: 5px;
                     }
                     div.error {
                         size: smaller;

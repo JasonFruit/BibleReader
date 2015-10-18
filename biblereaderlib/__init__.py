@@ -6,12 +6,12 @@ from PySide.QtCore import *
 from PySide.QtGui import *
 from PySide.QtWebKit import *
 
+from .reference_parser import ReferenceParser
 from .bible_reader import BibleReaderModel
 from .books import books_order
 from .rc import *
 from .first_run import *
-from annotations import *
-from annotations_ui import *
+from .one_year import todays_reading
 
 app = QApplication(sys.argv)
 
@@ -78,10 +78,6 @@ class BibleReader(QMainWindow, BibleReaderModel):
         BibleReaderModel.__init__(self)
 
         self.parser = ReferenceParser()
-        self.annotations = AnnotationManager()
-
-        map(self.annotations.add_category,
-            ["Cat 1", "Cat 2", "Cat 3"])
 
         self.setWindowTitle(app_name)
 
@@ -97,12 +93,14 @@ class BibleReader(QMainWindow, BibleReaderModel):
 
         self.set_up_passage_menu()
 
+        # the view menu
         self.view_menu = self.menuBar().addMenu("Vie&w")
         self.set_up_view_menu()
 
-        self.annotation_menu = self.menuBar().addMenu("&Annotations")
-        self.set_up_annotation_menu()
-
+        # the daily reading menu
+        self.reading_menu = self.menuBar().addMenu("&Readings")
+        self.set_up_reading_menu()
+        
         self.add_shortcuts()
         self.lookup(self.last_passage)
 
@@ -154,6 +152,17 @@ class BibleReader(QMainWindow, BibleReaderModel):
         print_action.triggered.connect(self.print_)
         self.passage_menu.addAction(print_action)
 
+    def set_up_reading_menu(self):
+        todays_ot_action = QAction("&Today's Old Testament reading", self)
+        todays_ot_action.triggered.connect(self.show_todays_ot_reading)
+
+        self.reading_menu.addAction(todays_ot_action)
+
+        todays_nt_action = QAction("&Today's New Testament reading", self)
+        todays_nt_action.triggered.connect(self.show_todays_nt_reading)
+
+        self.reading_menu.addAction(todays_nt_action)
+
     def print_(self):
         printDialog = QPrintDialog()
         if printDialog.exec_() == QDialog.Accepted:
@@ -202,31 +211,13 @@ class BibleReader(QMainWindow, BibleReaderModel):
         if ok:
             self.lookup(passage_ref)
 
-    def set_up_annotation_menu(self):
-        add_action = QAction("&Add", self)
-        add_action.triggered.connect(self.add_annotation)
-        self.annotation_menu.addAction(add_action)
+    def show_todays_ot_reading(self):
+        ref = todays_reading("ot")
+        self.lookup(ref)
 
-    def add_annotation(self):
-        passage_ref = self.last_passage
-
-        if len(self.annotations.keys()) > 0:
-            category, ok = QInputDialog.getItem(self, "Annotation Category",
-                                                "Category:",
-                                                self.annotations.keys())
-        else:
-            category, ok = "uncategorized", True
-
-        if ok:
-            note = Annotation(self.parser.parse(passage_ref),
-                              "")
-            dlg = AnnotationDialog(note, self)
-
-            def add_note():
-                self.annotations[category].append(note)
-
-            dlg.accepted.connect(add_note)
-            dlg.exec_()
+    def show_todays_nt_reading(self):
+        ref = todays_reading("nt")
+        self.lookup(ref)
 
     def lookup(self, passage_ref):
         passage_ref = repr(self.parser.parse(passage_ref))

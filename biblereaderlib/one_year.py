@@ -372,7 +372,7 @@ class OneYearReading(object):
     def todays_reading(self, testament):
         today = datetime.today()
         year_start = datetime(today.year, 1, 1)
-        day_of_year = today.toordinal() - year_start.toordinal()
+        day_of_year = (today - year_start).days
         if testament == "ot":
             return self.readings[day_of_year][0]
         elif testament == "nt":

@@ -213,11 +213,11 @@ class BibleReader(QMainWindow, BibleReaderModel):
             self.lookup(passage_ref)
 
     def show_todays_ot_reading(self):
-        ref = self.readings.todays_reading("ot")
+        ref = self.one_year.todays_reading("ot")
         self.lookup(ref)
 
     def show_todays_nt_reading(self):
-        ref = self.readings.todays_reading("nt")
+        ref = self.one_year.todays_reading("nt")
         self.lookup(ref)
 
     def lookup(self, passage_ref):

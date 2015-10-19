@@ -366,14 +366,16 @@ readings = [['Genesis 1-3', 'Matthew 1'],
             ['Zechariah 13-14', 'Revelation 21'],
             ['Malachi 1-4', 'Revelation 22']]
 
-def todays_reading(testament):
-    today = datetime.today()
-    year_start = datetime(today.year, 1, 1)
-    day_of_year = today.toordinal() - year_start.toordinal()
-    if testament == "ot":
-        return readings[day_of_year][0]
-    elif testament == "nt":
-        return readings[day_of_year][1]
-    else:
-        raise ValueError("Testament must be either 'ot' or 'nt'.")
-
+class OneYearReading(object):
+    def __init__(self):
+        self.readings = readings
+    def todays_reading(self, testament):
+        today = datetime.today()
+        year_start = datetime(today.year, 1, 1)
+        day_of_year = today.toordinal() - year_start.toordinal()
+        if testament == "ot":
+            return self.readings[day_of_year][0]
+        elif testament == "nt":
+            return self.readings[day_of_year][1]
+        else:
+            raise ValueError("Testament must be either 'ot' or 'nt'.")

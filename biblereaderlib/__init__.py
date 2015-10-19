@@ -11,11 +11,11 @@ from .bible_reader import BibleReaderModel
 from .books import books_order
 from .rc import *
 from .first_run import *
-from .one_year import todays_reading
+from .one_year import OneYearReading
 
 app = QApplication(sys.argv)
 
-app_name = "Bible Reader"
+app_name = "KJV Reader"
 
 
 class PassageSelector(QDialog):
@@ -78,7 +78,8 @@ class BibleReader(QMainWindow, BibleReaderModel):
         BibleReaderModel.__init__(self)
 
         self.parser = ReferenceParser()
-
+        self.one_year = OneYearReading()
+        
         self.setWindowTitle(app_name)
 
         # add the main scripture display widget
@@ -212,11 +213,11 @@ class BibleReader(QMainWindow, BibleReaderModel):
             self.lookup(passage_ref)
 
     def show_todays_ot_reading(self):
-        ref = todays_reading("ot")
+        ref = self.readings.todays_reading("ot")
         self.lookup(ref)
 
     def show_todays_nt_reading(self):
-        ref = todays_reading("nt")
+        ref = self.readings.todays_reading("nt")
         self.lookup(ref)
 
     def lookup(self, passage_ref):

@@ -229,6 +229,7 @@ class BibleReader(QMainWindow, BibleReaderModel):
             dlg.exec_()
 
     def lookup(self, passage_ref):
+        passage_ref = repr(self.parser.parse(passage_ref))
         self.display.setHtml(self.get_html(passage_ref))
 
 
